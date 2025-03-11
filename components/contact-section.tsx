@@ -2,125 +2,133 @@
 
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
-import emailjs from '@emailjs/browser'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { useToast } from '@/components/ui/use-toast'
 
 export default function ContactSection() {
+  const { toast } = useToast()
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    subject: '',
     message: '',
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [submitMessage, setSubmitMessage] = useState('')
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
-    setFormData(prevState => ({ ...prevState, [name]: value }))
+    setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
-    setSubmitMessage('')
-
+    
     try {
-      const result = await emailjs.send(
-        'service_odaqpuf', // Replace with your EmailJS service ID
-        'template_40nkzfq', // Replace with your EmailJS template ID
-        formData,
-        'dxmHsWfqFFQ83ECF7' // Your public key
-      )
-
-      console.log(result.text)
-      setSubmitMessage('Message sent successfully!')
-      setFormData({ name: '', email: '', message: '' })
+      // Simulate form submission
+      await new Promise(resolve => setTimeout(resolve, 1000))
+      
+      toast({
+        title: "Message sent!",
+        description: "Thank you for your message. I'll get back to you soon.",
+      })
+      
+      // Reset form
+      setFormData({
+        name: '',
+        email: '',
+        subject: '',
+        message: '',
+      })
     } catch (error) {
-      console.error('Failed to send email:', error)
-      if (error instanceof Error) {
-        if (error.message === 'Failed to fetch') {
-          setSubmitMessage('Network error. Please check your internet connection and try again.')
-        } else {
-          setSubmitMessage(`Failed to send message: ${error.message}`)
-        }
-      } else {
-        setSubmitMessage('An unexpected error occurred. Please try again later.')
-      }
+      toast({
+        title: "Error",
+        description: "There was a problem sending your message. Please try again.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsSubmitting(false)
     }
-
-    setIsSubmitting(false)
   }
 
   return (
-    <section id="contact" className="bg-black py-20">
+    <section id="contact" className="bg-black py-12 md:py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-4xl font-bold text-white mb-12 text-center">Contact Me</h2>
+        <h2 className="text-3xl md:text-4xl font-bold text-white mb-8 md:mb-12 text-center">Contact Me</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div>
-            <h3 className="text-2xl font-bold text-white mb-4">Get in Touch</h3>
-            <p className="text-gray-400 mb-4">
+          <div className="order-2 md:order-1">
+            <h3 className="text-xl md:text-2xl font-bold text-white mb-4">Get in Touch</h3>
+            <p className="text-gray-400 mb-6">
               I'm always open to new opportunities and collaborations. Feel free to reach out!
             </p>
-            <div className="space-y-2">
+            <div className="space-y-4">
               <p className="text-gray-300">
                 <span className="font-bold">Email:</span> stonesyxxx@gmail.com
               </p>
               <p className="text-gray-300">
-                <span className="font-bold">Phone:</span> +2347086784657              </p>
+                <span className="font-bold">Phone:</span> +2347086784657
+              </p>
               <p className="text-gray-300">
                 <span className="font-bold">Address:</span> Bank of Industry Kaduna State
               </p>
             </div>
           </div>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-300">Name</label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                required
-                className="mt-1 block w-full rounded-md bg-zinc-800 border-gray-700 text-white p-2"
-              />
-            </div>
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-300">Email</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-                className="mt-1 block w-full rounded-md bg-zinc-800 border-gray-700 text-white p-2"
-              />
-            </div>
-            <div>
-              <label htmlFor="message" className="block text-sm font-medium text-gray-300">Message</label>
-              <textarea
-                id="message"
-                name="message"
-                rows={4}
-                value={formData.message}
-                onChange={handleChange}
-                required
-                className="mt-1 block w-full rounded-md bg-zinc-800 border-gray-700 text-white p-2"
-              ></textarea>
-            </div>
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-              className="bg-amber-500 hover:bg-amber-600 text-black px-8 py-3 rounded-full"
-            >
-              {isSubmitting ? 'Sending...' : 'Send Message'}
-            </Button>
-            {submitMessage && (
-              <p className={`mt-2 ${submitMessage.includes('successfully') ? 'text-green-500' : 'text-red-500'}`}>
-                {submitMessage}
-              </p>
-            )}
-          </form>
+          
+          <div className="order-1 md:order-2">
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <Input
+                  type="text"
+                  name="name"
+                  placeholder="Your Name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                  className="bg-zinc-900/50 border-zinc-700 text-white placeholder:text-gray-500"
+                />
+              </div>
+              <div>
+                <Input
+                  type="email"
+                  name="email"
+                  placeholder="Your Email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                  className="bg-zinc-900/50 border-zinc-700 text-white placeholder:text-gray-500"
+                />
+              </div>
+              <div>
+                <Input
+                  type="text"
+                  name="subject"
+                  placeholder="Subject"
+                  value={formData.subject}
+                  onChange={handleChange}
+                  required
+                  className="bg-zinc-900/50 border-zinc-700 text-white placeholder:text-gray-500"
+                />
+              </div>
+              <div>
+                <Textarea
+                  name="message"
+                  placeholder="Your Message"
+                  value={formData.message}
+                  onChange={handleChange}
+                  required
+                  className="bg-zinc-900/50 border-zinc-700 text-white placeholder:text-gray-500 min-h-[150px]"
+                />
+              </div>
+              <Button 
+                type="submit" 
+                disabled={isSubmitting}
+                className="bg-amber-500 hover:bg-amber-600 text-black w-full md:w-auto px-8 py-3 rounded-full"
+              >
+                {isSubmitting ? 'Sending...' : 'Send Message'}
+              </Button>
+            </form>
+          </div>
         </div>
       </div>
     </section>

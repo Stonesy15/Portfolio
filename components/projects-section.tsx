@@ -34,25 +34,25 @@ export function ProjectsSection() {
   ]
 
   return (
-    <section id="projects" className="bg-black py-20">
+    <section id="projects" className="bg-black py-12 md:py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-4xl font-bold text-white mb-12 text-center">My Projects</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <h2 className="text-3xl md:text-4xl font-bold text-white mb-8 md:mb-12 text-center">My Projects</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           {projects.map((project, index) => (
-            <Link href={project.link} key={index} className="block">
-              <div className="relative group cursor-pointer">
+            <Link href={project.link} key={index} target="_blank" rel="noopener noreferrer" className="block">
+              <div className="relative group cursor-pointer overflow-hidden rounded-lg">
                 <Image
                   src={project.image || "/placeholder.svg"}
                   alt={project.title}
                   width={400}
                   height={300}
-                  className="w-full h-[300px] object-cover rounded-lg transition-transform duration-300 group-hover:scale-105"
+                  className="w-full h-[200px] sm:h-[250px] md:h-[300px] object-cover transition-transform duration-300 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-black bg-opacity-75 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg">
-                  <div className="text-center">
-                    <h3 className="text-xl font-bold text-white mb-2">{project.title}</h3>
-                    <p className="text-gray-300">{project.description}</p>
-                    <span className="mt-4 inline-block px-4 py-2 bg-amber-500 text-black rounded-full text-sm font-semibold">
+                <div className="absolute inset-0 bg-black bg-opacity-75 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <div className="text-center p-4">
+                    <h3 className="text-lg md:text-xl font-bold text-white mb-2">{project.title}</h3>
+                    <p className="text-gray-300 text-sm md:text-base">{project.description}</p>
+                    <span className="mt-3 md:mt-4 inline-block px-3 py-1 md:px-4 md:py-2 bg-amber-500 text-black rounded-full text-xs md:text-sm font-semibold">
                       View Project
                     </span>
                   </div>

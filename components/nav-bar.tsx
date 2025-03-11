@@ -2,11 +2,13 @@
 
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
-import { Menu } from 'lucide-react'
+import { Menu, X } from 'lucide-react'
+import { useIsMobile } from '@/hooks/use-mobile'
 
 export function NavBar() {
   const [isOpen, setIsOpen] = useState(false)
   const [activeSection, setActiveSection] = useState('home')
+  const isMobile = useIsMobile()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -15,7 +17,7 @@ export function NavBar() {
 
       sections.forEach((section) => {
         const sectionTop = section.getBoundingClientRect().top
-        if (sectionTop <= 0) {
+        if (sectionTop <= 100) { // Increased threshold for better detection
           currentSection = section.id
         }
       })
@@ -34,6 +36,9 @@ export function NavBar() {
       targetElement.scrollIntoView({ behavior: 'smooth' })
     }
     setActiveSection(targetId)
+    if (isMobile) {
+      setIsOpen(false) // Close mobile menu after clicking a link
+    }
   }
 
   const navItems = [
@@ -62,8 +67,9 @@ export function NavBar() {
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="text-gray-400 hover:text-white focus:outline-none"
+              aria-label={isOpen ? "Close menu" : "Open menu"}
             >
-              <Menu className="h-6 w-6" />
+              {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
           </div>
           
@@ -78,7 +84,7 @@ export function NavBar() {
                   activeSection === item.href
                     ? 'text-amber-500'
                     : 'text-gray-300 hover:text-white'
-                }`}
+                } transition-colors duration-200`}
               >
                 {item.label}
               </a>
@@ -88,7 +94,11 @@ export function NavBar() {
       </div>
       
       {/* Mobile menu */}
-      <div className={`${isOpen ? 'block' : 'hidden'} md:hidden bg-black/95`}>
+      <div 
+        className={`${
+          isOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'
+        } md:hidden bg-black/95 overflow-hidden transition-all duration-300 ease-in-out`}
+      >
         <div className="px-2 pt-2 pb-3 space-y-1">
           {navItems.map((item) => (
             <a
@@ -99,7 +109,7 @@ export function NavBar() {
                 activeSection === item.href
                   ? 'text-amber-500'
                   : 'text-gray-300 hover:text-white'
-              }`}
+              } transition-colors duration-200`}
             >
               {item.label}
             </a>
